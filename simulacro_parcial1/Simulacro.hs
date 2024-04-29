@@ -54,9 +54,17 @@ module Simulacro where
     contarAmigos _ [] = 0
     contarAmigos p ((a1, a2):xs)
         | p == a1 || p == a2 = 1 + contarAmigos p xs
-        | otherwise = contarAmigos p xs
+        | otherwise = contarAmigos p xs 
 
-    --personaConMasAmigos :: [(String, String)] -> String
-    --personasConMasAmigos (p1, p2):xs
-    --    | contarAmigos p1 >= contarAmigos p2 = 
-    --personaConMasAmigos _ = "Yo seguro que no"
+    personaConMasAmigos :: [(String, String)] -> String
+    personaConMasAmigos rs = pConMasAmigos (personas rs) (cantidadesDeAmigos (personas rs) rs)
+
+    cantidadesDeAmigos :: [String] -> [(String, String)] -> [Integer]
+    cantidadesDeAmigos [] _ = []
+    cantidadesDeAmigos (p1:ps) rs = contarAmigos p1 rs:cantidadesDeAmigos ps rs
+
+    pConMasAmigos :: [String] -> [Integer] -> String
+    pConMasAmigos [p1] [c1] = p1
+    pConMasAmigos (p1:p2:ps) (c1:c2:cs)
+        | c1 >= c2 = pConMasAmigos (p1:ps) (c1:cs)
+        | otherwise = pConMasAmigos (p2:ps) (c2:cs)

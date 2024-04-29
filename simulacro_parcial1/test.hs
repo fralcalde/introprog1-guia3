@@ -60,3 +60,14 @@ personasTests = test [
 amigosDeTests = test [
     "Amigos de Laura" ~: amigosDe "Laura" personasCaso2 ~?= ["Beethoven", "Travis"]
     ]
+
+contarAmigosTests = test [
+    "Cantidad amigos de Laura" ~: contarAmigos "Laura" personasCaso2 ~?= 2
+    ]
+
+caso3 = [
+    ("Joe", "Frank"),
+    ("Laura", "Beethoven"),
+    ("Joe", "Laura"),
+    ("Laura", "Marisha")
+    ]
