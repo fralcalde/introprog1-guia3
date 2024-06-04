@@ -120,3 +120,151 @@ def buscar_el_maximo(p: Pila[int]) -> int:
             max = elem
 
     return max
+
+# Ejercicio 11
+def esta_bien_balanceada(formula: str) -> bool:
+    # A partir de un '(' llamar recursivamente buscar el ')'. 
+    # Pero no puedo hacer slicing me parece.
+    # Capaz se puede resolver con Pilas y Colas
+    return False 
+
+# Ejercicio 12
+from guia7 import pertenece2 as pertenece
+
+def evaluar_expresion(expresion: str) -> float:
+    tokens: list[str] = []
+
+def split_string(s: str, sep: chr) -> list[str]:
+    res: list[str] = [""]
+    index: int = 0
+
+    for character in s:
+        if character == ' ':
+            res.append("")
+            index = index + 1
+        else:
+            res[index] = res[index] + character
+    
+    return res
+
+# Ejercicio 13
+from queue import Queue as Cola
+
+def generar_cola_nros_al_azar(cantidad: int, desde: int, hasta: int) -> Cola[int]:
+    cola: Cola[int] = Cola()
+
+    for _ in range(cantidad):
+        elem: int = random.randint(desde, hasta)
+        cola.put(elem)
+
+    return cola
+
+# Ejercicio 16
+# No puede haber repetidos
+# 1.
+def armar_secuencia_de_bingo() -> Cola[int]:
+    secuencia: list[int] = []
+    cola: Cola[int] = Cola()
+
+    while len(secuencia) < 100:
+        elem: int = random.randint(0, 99)
+        if not pertenece(secuencia, elem):
+            secuencia.append(elem)
+            cola.put(elem)
+
+    return cola
+
+# 2.
+def jugar_carton_de_bingo(carton: list[int], bolillero: Cola[int]) -> int:
+    extracciones: int = 0
+    aciertos: int = 0
+    #bolillero: Cola[int] = copiar_cola(bolillero)
+
+    while not bolillero.empty() and aciertos < len(carton):
+        extraccion: int = bolillero.get()
+        if pertenece(carton, extraccion):
+            aciertos = aciertos + 1
+        
+        extracciones = extracciones + 1
+
+    return extracciones
+
+def nuevo_carton(size: int) -> list[int]:
+    num_usados: list[int] = []
+    carton: list[int] = []
+
+    while len(carton) < size: 
+        elem: int = random.randint(0, 99)
+        if not pertenece(carton, elem):
+            carton.append(elem)
+
+    return carton
+
+# Ejercicio mio porque si:
+def test_esperanza_bingo(test_size: int, carton_size: int) -> float:
+    acum = 0
+    for i in range(test_size):
+        carton = nuevo_carton(carton_size)
+        bolillero = armar_secuencia_de_bingo()
+
+        cant = jugar_carton_de_bingo(carton, bolillero)
+
+        acum = acum + cant
+
+    esp: float = acum / test_size
+    print("esperanza empirica: ", esp)
+    return  esp
+
+# Ejercicio 19
+def agrupar_por_longitud(path: str) -> dict[int, int]:
+    f: typing.IO = open(path, 'r')
+    words: list[str] = palabras_en_archivo(f)
+    distrib: dict[int, int] = dict()
+    print(words)
+
+    for word in words:
+        size: int = len(word)
+        if pertenece(list(distrib.keys()), size):
+            distrib[size] = distrib[size] + 1
+        else:
+            distrib[size] = 1
+
+    return distrib
+
+def palabras_en_archivo(f: typing.IO) -> list[str]:
+    lista: list[str] = []
+
+    for line in f.readlines():
+        line = line.replace('\n', '')
+        palabras: list[str] = split_string(line, ' ')
+
+        lista = lista + palabras
+
+    return lista
+
+# Ejercicio 21
+def palabra_mas_frecuente(path: str) -> str:
+    f: typing.IO = open(path, 'r')
+    words: list[str] = palabras_en_archivo(f)
+    frec: dict[str, int] = frecuencias(words)
+    
+    best_word: str = ""
+    apariciones: int = 0
+
+    for key in frec.keys():
+        if apariciones < frec[key]:
+            best_word = key
+            apariciones = frec[key]
+
+    return best_word
+
+def frecuencias(words: list[str]) -> dict[str, int]:
+    res: dict[str, int] = dict()
+
+    for word in words:
+        if pertenece(list(res.keys()), word):
+            res[word] = res[word] + 1
+        else:
+            res[word] = 1
+
+    return res
