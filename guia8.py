@@ -3,10 +3,24 @@ import typing
 from queue import LifoQueue as Pila
 from queue import Queue as Cola
 from guia7 import pertenece2 as pertenece
+
+
+def split_string(s: str, sep: chr) -> list[str]:
+    res: list[str] = [""]
+    index: int = 0
+
+    for character in s:
+        if character == sep:
+            res.append("")
+            index = index + 1
+        else:
+            res[index] = res[index] + character
+
+    return res
+
+
 # Ejercicio 1
 # 1.
-
-
 def contar_lineas(path: str) -> int:
     f: typing.IO = open(path, 'r')
     lines: list[str] = f.readlines()
@@ -68,11 +82,91 @@ def clonar_sin_comentarios(path: str) -> None:
     new_f.close()
 
 
-clonar_sin_comentarios("guia8/archivo1")
+# Ejercicio 3
+def invertir_lineas(nombre_archivo: str) -> None:
+    f: typing.IO = open(nombre_archivo, 'r')
+    lines: Pila[str] = Pila()
+
+    for line in f.readlines():
+        lines.put(line)
+
+    f.close()
+    out_name: str = nombre_archivo + "_inverso"
+    output_f: typing.IO = open(out_name, 'w')
+
+    while not lines.empty():
+        line: str = lines._get()
+        output_f.write(line)
+
+
+# Ejercicio 4
+def agregar_frase_al_final(nombre_archivo: str, frase: str) -> None:
+    f: typing.IO = open(nombre_archivo, 'a')
+    f.write("\n" + frase)
+    f.close()
+
+
+# Ejercicio 5
+def agregar_frase_al_principio(nombre_archivo: str, frase: str) -> None:
+    f: typing.IO = open(nombre_archivo, 'r')
+    lines: list[str] = f.readlines()
+    f.close()
+
+    f = open(nombre_archivo, 'w')
+    f.write(frase + "\n")
+
+    for line in lines:
+        f.write(line)
+
+
+# Ejercicio 6
+# No porque me da fiaca...
+
+# Ejercicio 7
+# El ejercicio pide esta funcion auxiliar nombre_archivo como parámetro.
+# Pero me rehúso a implementar algo que lee de disco algo que ya leyó hace
+# 2 líneas.
+# Mejor recibimos la lista de notas ya extraídas línea por línea.
+def promedio_estudiante(notas: list[list[str]], lu: str) -> float:
+    notas: list[list[str]] = notas.copy()
+    acum: float = 0.0
+    cant: int = 0
+
+    for nota in notas:
+        if nota[0] == lu:
+            acum = acum + float(nota[3])
+            cant = cant + 1
+
+    return acum / cant
+
+
+# Algo está mal en este ejercicio. Pide calcular el promedio
+# de "uno" de ellos, pero no especifica cual. ¿Capaz el primero?
+# O mejor, escribir el promedio para cada uno de ellos.
+def calcular_promedio_por_estudiante(
+        nombre_archivo_notas: str,
+        nombre_archivo_promedios: str
+) -> None:
+    f: typing.IO = open(nombre_archivo_notas, 'r')
+    lines: list[str] = f.readlines()
+    promedios: dict[str, float] = dict()
+    notas: list[list[str]] = []
+
+    for line in lines:
+        notas.append(split_string(line, ','))
+
+    for nota in notas:
+        lu: str = nota[0]
+
+        if not pertenece(list(promedios.keys()), lu):
+            promedios[lu] = promedio_estudiante(notas, lu)
+
+    out_f: typing.IO = open(nombre_archivo_promedios, 'w')
+    for lu in promedios.keys():
+        out_f.write("{}: {}\n".format(lu, promedios[lu]))
 
 
 # Ejercicio 8
-
 def copiar_pila(pila: Pila) -> Pila:
     nueva: Pila = Pila()
     pila_temp: Pila = Pila()
@@ -151,18 +245,6 @@ def evaluar_expresion(expresion: str) -> float:
     tokens: list[str] = []
 
 
-def split_string(s: str, sep: chr) -> list[str]:
-    res: list[str] = [""]
-    index: int = 0
-
-    for character in s:
-        if character == ' ':
-            res.append("")
-            index = index + 1
-        else:
-            res[index] = res[index] + character
-
-    return res
 
 
 # Ejercicio 13
