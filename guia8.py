@@ -1,14 +1,19 @@
 import random
 import typing
+from queue import LifoQueue as Pila
+from queue import Queue as Cola
+from guia7 import pertenece2 as pertenece
 # Ejercicio 1
 # 1.
+
 
 def contar_lineas(path: str) -> int:
     f: typing.IO = open(path, 'r')
     lines: list[str] = f.readlines()
-    f.close() 
+    f.close()
 
     return len(lines)
+
 
 # 2.
 def contiene_substring(sub: str, s: str) -> bool:
@@ -22,18 +27,21 @@ def contiene_substring(sub: str, s: str) -> bool:
 
     return contiene
 
+
 def existe_palabra(palabra: str, path: str) -> bool:
     f: typing.IO = open(path, 'r')
     existe: bool = False
     lines: str = f.readlines()
-    f.close() 
+    f.close()
 
     for line in lines:
         existe = contiene_substring(palabra, line)
 
-        if existe: break
+        if existe:
+            break
 
     return existe
+
 
 # Ejercicio 2
 def es_comentario(line: str) -> bool:
@@ -45,6 +53,7 @@ def es_comentario(line: str) -> bool:
 
     res = line[index] == '#'
     return res
+
 
 def clonar_sin_comentarios(path: str) -> None:
     f: typing.IO = open(path, 'r')
@@ -58,10 +67,11 @@ def clonar_sin_comentarios(path: str) -> None:
 
     new_f.close()
 
+
 clonar_sin_comentarios("guia8/archivo1")
 
+
 # Ejercicio 8
-from queue import LifoQueue as Pila
 
 def copiar_pila(pila: Pila) -> Pila:
     nueva: Pila = Pila()
@@ -70,7 +80,7 @@ def copiar_pila(pila: Pila) -> Pila:
     while not pila.empty():
         elem = pila.get()
         pila_temp.put(elem)
-        
+
     while not pila_temp.empty():
         elem = pila_temp.get()
         pila.put(elem)
@@ -78,7 +88,9 @@ def copiar_pila(pila: Pila) -> Pila:
 
     return nueva
 
-# Es super lenta porque cada vez que insertamos, contamos de nuevo todos los elementos
+
+# Es super lenta porque cada vez que insertamos,
+# contamos de nuevo todos los elementos
 def generar_nros_al_azar(cant: int, desde: int, hasta: int) -> Pila[int]:
     pila: Pila[int] = Pila()
 
@@ -87,6 +99,7 @@ def generar_nros_al_azar(cant: int, desde: int, hasta: int) -> Pila[int]:
         pila.put(elem)
 
     return pila
+
 
 def generar_nros_al_azar2(cant: int, desde: int, hasta: int) -> Pila[int]:
     pila: Pila[int] = Pila()
@@ -97,16 +110,18 @@ def generar_nros_al_azar2(cant: int, desde: int, hasta: int) -> Pila[int]:
 
     return pila
 
+
 # Ejercicio 9
 def contar_elementos(pila: Pila) -> int:
     cantidad: int = 0
     p: Pila = copiar_pila(pila)
-    
+
     while not p.empty():
         p.get()
         cantidad = cantidad + 1
 
     return cantidad
+
 
 # Ejercicio 10
 def buscar_el_maximo(p: Pila[int]) -> int:
@@ -121,18 +136,20 @@ def buscar_el_maximo(p: Pila[int]) -> int:
 
     return max
 
+
 # Ejercicio 11
 def esta_bien_balanceada(formula: str) -> bool:
-    # A partir de un '(' llamar recursivamente buscar el ')'. 
+    # A partir de un '(' llamar recursivamente buscar el ')'.
     # Pero no puedo hacer slicing me parece.
     # Capaz se puede resolver con Pilas y Colas
-    return False 
+    return False
+
 
 # Ejercicio 12
-from guia7 import pertenece2 as pertenece
 
 def evaluar_expresion(expresion: str) -> float:
     tokens: list[str] = []
+
 
 def split_string(s: str, sep: chr) -> list[str]:
     res: list[str] = [""]
@@ -144,11 +161,11 @@ def split_string(s: str, sep: chr) -> list[str]:
             index = index + 1
         else:
             res[index] = res[index] + character
-    
+
     return res
 
+
 # Ejercicio 13
-from queue import Queue as Cola
 
 def generar_cola_nros_al_azar(cantidad: int, desde: int, hasta: int) -> Cola[int]:
     cola: Cola[int] = Cola()
@@ -158,6 +175,7 @@ def generar_cola_nros_al_azar(cantidad: int, desde: int, hasta: int) -> Cola[int
         cola.put(elem)
 
     return cola
+
 
 # Ejercicio 16
 # No puede haber repetidos
@@ -174,23 +192,24 @@ def armar_secuencia_de_bingo() -> Cola[int]:
 
     return cola
 
+
 # 2.
 def jugar_carton_de_bingo(carton: list[int], bolillero: Cola[int]) -> int:
     extracciones: int = 0
     aciertos: int = 0
-    #bolillero: Cola[int] = copiar_cola(bolillero)
+    # bolillero: Cola[int] = copiar_cola(bolillero)
 
     while not bolillero.empty() and aciertos < len(carton):
         extraccion: int = bolillero.get()
         if pertenece(carton, extraccion):
             aciertos = aciertos + 1
-        
+
         extracciones = extracciones + 1
 
     return extracciones
 
+
 def nuevo_carton(size: int) -> list[int]:
-    num_usados: list[int] = []
     carton: list[int] = []
 
     while len(carton) < size: 
@@ -199,6 +218,7 @@ def nuevo_carton(size: int) -> list[int]:
             carton.append(elem)
 
     return carton
+
 
 # Ejercicio mio porque si:
 def test_esperanza_bingo(test_size: int, carton_size: int) -> float:
@@ -213,7 +233,8 @@ def test_esperanza_bingo(test_size: int, carton_size: int) -> float:
 
     esp: float = acum / test_size
     print("esperanza empirica: ", esp)
-    return  esp
+    return esp
+
 
 # Ejercicio 19
 def agrupar_por_longitud(path: str) -> dict[int, int]:
@@ -231,6 +252,7 @@ def agrupar_por_longitud(path: str) -> dict[int, int]:
 
     return distrib
 
+
 def palabras_en_archivo(f: typing.IO) -> list[str]:
     lista: list[str] = []
 
@@ -242,12 +264,13 @@ def palabras_en_archivo(f: typing.IO) -> list[str]:
 
     return lista
 
+
 # Ejercicio 21
 def palabra_mas_frecuente(path: str) -> str:
     f: typing.IO = open(path, 'r')
     words: list[str] = palabras_en_archivo(f)
     frec: dict[str, int] = frecuencias(words)
-    
+
     best_word: str = ""
     apariciones: int = 0
 
@@ -257,6 +280,7 @@ def palabra_mas_frecuente(path: str) -> str:
             apariciones = frec[key]
 
     return best_word
+
 
 def frecuencias(words: list[str]) -> dict[str, int]:
     res: dict[str, int] = dict()
