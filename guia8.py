@@ -233,22 +233,59 @@ def buscar_el_maximo(p: Pila[int]) -> int:
 
 # Ejercicio 11
 def esta_bien_balanceada(formula: str) -> bool:
-    # A partir de un '(' llamar recursivamente buscar el ')'.
-    # Pero no puedo hacer slicing me parece.
-    # Capaz se puede resolver con Pilas y Colas
-    return False
+    formula: list[chr] = list(formula).copy()
+    pila: Pila[chr] = Pila()
+    balanceada: bool = True
+
+    for c in formula:
+        if c == '(':
+            pila.put(c)
+        elif c == ')':
+            if not pila.empty():
+                pila.get()
+            else:
+                balanceada = False
+
+    balanceada = balanceada and pila.empty()
+
+    return balanceada
 
 
 # Ejercicio 12
-
 def evaluar_expresion(expresion: str) -> float:
-    tokens: list[str] = []
+    tokens: list[str] = split_string(expresion, ' ')
+    operandos: Pila[float] = Pila()
+    operadores: list[chr] = ["+", "-", "*", "/"]
+
+    for token in tokens:
+        if pertenece(operadores, token):
+            b: float = operandos.get()
+            a: float = operandos.get()
+            res: float = eval_expr_atomica(a, b, token)
+
+            operandos.put(res)
+        else:
+            operandos.put(float(token))
+
+    return operandos.get()
 
 
+def eval_expr_atomica(a: float, b: float, op: chr) -> float:
+    res: float = 0.0
+
+    if op == '+':
+        res = a + b
+    if op == '-':
+        res = a - b
+    if op == '*':
+        res = a * b
+    if op == '/':
+        res = a / b
+
+    return res
 
 
 # Ejercicio 13
-
 def generar_cola_nros_al_azar(cantidad: int, desde: int, hasta: int) -> Cola[int]:
     cola: Cola[int] = Cola()
 
@@ -257,6 +294,34 @@ def generar_cola_nros_al_azar(cantidad: int, desde: int, hasta: int) -> Cola[int
         cola.put(elem)
 
     return cola
+
+# Ejercicio 14
+def copiar_cola(cola: Cola) -> Cola:
+    nueva: cola = Cola()
+    cola_temp: cola = Cola()
+
+    while not cola.empty():
+        elem = cola.get()
+        cola_temp.put(elem)
+
+    while not cola_temp.empty():
+        elem = cola_temp.get()
+        cola.put(elem)
+        nueva.put(elem)
+
+    return nueva
+# Respuesta: No hay diferencias. La copia es igual
+
+
+def cantidad_elementos(c: Cola) -> int:
+    cant: int = 0
+    cola: Cola = copiar_cola(c)
+
+    while not cola.empty():
+        cola.get()
+        cant = cant + 1
+
+    return cant
 
 
 # Ejercicio 16
